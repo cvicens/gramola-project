@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package io.openshift.booster.service;
+package com.redhat.gramola.events.service;
 
-import io.openshift.booster.exception.NotFoundException;
-import io.openshift.booster.exception.UnprocessableEntityException;
-import io.openshift.booster.exception.UnsupportedMediaTypeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +26,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.redhat.gramola.events.exception.NotFoundException;
+import com.redhat.gramola.events.exception.UnprocessableEntityException;
+import com.redhat.gramola.events.exception.UnsupportedMediaTypeException;
 
 import java.util.List;
 import java.util.Objects;

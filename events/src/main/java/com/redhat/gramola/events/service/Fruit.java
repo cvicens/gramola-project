@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.openshift.booster.service;
+package com.redhat.gramola.events.service;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

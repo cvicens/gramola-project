@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.openshift.booster;
+package com.redhat.gramola.events;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class OpenShiftIT {
+public class EventsApplicationIT {
 
   @AwaitRoute(path = "/health")
   @RouteURL("${app.name}")

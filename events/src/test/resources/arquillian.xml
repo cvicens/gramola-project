@@ -4,6 +4,6 @@
     <property name="env.init.enabled">true</property>
     <property name="enableImageStreamDetection">false</property>
     <property name="env.dependencies">file://${basedir}/.openshiftio/service.yaml</property>
-    <property name="app.name">booster</property>
+    <property name="app.name">events</property>
   </extension>
 </arquillian>

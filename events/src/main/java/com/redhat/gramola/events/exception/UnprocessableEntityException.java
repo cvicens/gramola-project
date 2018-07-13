@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package io.openshift.booster;
+package com.redhat.gramola.events.exception;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-@SpringBootApplication
-public class BoosterApplication {
+@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+public class UnprocessableEntityException extends RuntimeException {
 
-    public static void main(String[] args) {
-        SpringApplication.run(BoosterApplication.class, args);
+    public UnprocessableEntityException(String message) {
+        super(message);
     }
 
 }

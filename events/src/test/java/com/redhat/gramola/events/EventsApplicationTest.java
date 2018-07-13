@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package io.openshift.booster;
+package com.redhat.gramola.events;
 
 import java.util.Collections;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
-import io.openshift.booster.service.Fruit;
-import io.openshift.booster.service.FruitRepository;
+import com.redhat.gramola.events.service.Fruit;
+import com.redhat.gramola.events.service.FruitRepository;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +41,7 @@ import static org.junit.Assert.assertFalse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BoosterApplicationTest {
+public class EventsApplicationTest {
 
     @Value("${local.server.port}")
     private int port;

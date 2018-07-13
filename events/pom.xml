@@ -23,7 +23,7 @@
 
   <artifactId>events</artifactId>
 	
-  <groupId>io.openshift.booster</groupId>
+  <groupId>com.redhat.gramola.events</groupId>
   <version>1.0.0-SNAPSHOT</version>
 
   <name>Spring Boot - CRUD Booster</name>

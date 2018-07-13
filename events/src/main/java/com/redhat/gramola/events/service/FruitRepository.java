@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-package io.openshift.booster.exception;
+package com.redhat.gramola.events.service;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.data.repository.CrudRepository;
 
-@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-public class UnprocessableEntityException extends RuntimeException {
-
-    public UnprocessableEntityException(String message) {
-        super(message);
-    }
-
+public interface FruitRepository extends CrudRepository<Fruit, Integer> {
 }

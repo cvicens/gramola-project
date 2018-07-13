@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-package io.openshift.booster.service;
+package com.redhat.gramola.events;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-public interface FruitRepository extends CrudRepository<Fruit, Integer> {
+@SpringBootApplication
+public class EventsApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(EventsApplication.class, args);
+    }
+
 }
