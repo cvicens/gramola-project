@@ -20,8 +20,8 @@ import java.util.Collections;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
-import com.redhat.gramola.events.service.Fruit;
-import com.redhat.gramola.events.service.FruitRepository;
+import com.redhat.gramola.events.service.Event;
+import com.redhat.gramola.events.service.EventRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,23 +47,23 @@ public class EventsApplicationTest {
     private int port;
 
     @Autowired
-    private FruitRepository fruitRepository;
+    private EventRepository eventRepository;
 
     @Before
     public void beforeTest() {
-        fruitRepository.deleteAll();
-        RestAssured.baseURI = String.format("http://localhost:%d/api/fruits", port);
+        eventRepository.deleteAll();
+        RestAssured.baseURI = String.format("http://localhost:%d/api/events", port);
     }
 
     @Test
     public void testGetAll() {
-        Fruit cherry = fruitRepository.save(new Fruit("Cherry"));
-        Fruit apple = fruitRepository.save(new Fruit("Apple"));
+        Event event1 = eventRepository.save(new Event("Event1", "Address1", "City1", "Province1", "Country1", "2018-07-01", "18:00", "23:00", "Location1", "Artist1", "Desc1", "Image1"));
+        Event event2 = eventRepository.save(new Event("Event2", "Address2", "City2", "Province2", "Country2", "2018-07-01", "18:00", "23:00", "Location2", "Artist2", "Desc2", "Image2"));
         when().get()
                 .then()
                 .statusCode(200)
-                .body("id", hasItems(cherry.getId(), apple.getId()))
-                .body("name", hasItems(cherry.getName(), apple.getName()));
+                .body("id", hasItems(event1.getId(), event2.getId()))
+                .body("name", hasItems(event1.getName(), event2.getName()));
     }
 
     @Test
@@ -76,12 +76,12 @@ public class EventsApplicationTest {
 
     @Test
     public void testGetOne() {
-        Fruit cherry = fruitRepository.save(new Fruit("Cherry"));
-        when().get(String.valueOf(cherry.getId()))
+    	Event event1 = eventRepository.save(new Event("Event1", "Address1", "City1", "Province1", "Country1", "2018-07-01", "18:00", "23:00", "Location1", "Artist1", "Desc1", "Image1"));
+        when().get(String.valueOf(event1.getId()))
                 .then()
                 .statusCode(200)
-                .body("id", is(cherry.getId()))
-                .body("name", is(cherry.getName()));
+                .body("id", is(event1.getId()))
+                .body("name", is(event1.getName()));
     }
 
     @Test
@@ -93,14 +93,28 @@ public class EventsApplicationTest {
 
     @Test
     public void testPost() {
+    	 String object = "{\n" + 
+    		 		"    \"name\" : \"Guns 'n' Roses 2018\",\n" + 
+    		 		"    \"address\" : \"Calle Alcalá 1\",\n" + 
+    		 		"    \"city\" : \"MADRID\",\n" + 
+    		 		"    \"province\" : \"MADRID\",\n" + 
+    		 		"    \"country\" : \"SPAIN\",\n" + 
+    		 		"    \"date\" : \"2018-07-05\",\n" + 
+    		 		"    \"startTime\" : \"18:00\",\n" + 
+    		 		"    \"endTime\" : \"21:00\",\n" + 
+    		 		"    \"location\" : \"Plaza de toros de la Ventas\",\n" + 
+    		 		"    \"artist\" : \"Guns 'n' Roses\",\n" + 
+    		 		"    \"description\" : \"Lorem ipsum...\",\n" + 
+    		 		"    \"image\" : \"images/guns-P1080795.png\"\n" + 
+    		 		"}";
         given().contentType(ContentType.JSON)
-                .body(Collections.singletonMap("name", "Cherry"))
+                .body(object)
                 .when()
                 .post()
                 .then()
                 .statusCode(201)
                 .body("id", not(isEmptyString()))
-                .body("name", is("Cherry"));
+                .body("name", is("Guns 'n' Roses 2018"));
     }
 
     @Test
@@ -133,15 +147,29 @@ public class EventsApplicationTest {
 
     @Test
     public void testPut() {
-        Fruit cherry = fruitRepository.save(new Fruit("Cherry"));
+        Event event1 = eventRepository.save(new Event("Event1", "Address1", "City1", "Province1", "Country1", "2018-07-01", "18:00", "23:00", "Location1", "Artist1", "Desc1", "Image1"));
+        String newEvent1 = "{\n" + 
+		 		"    \"name\" : \"Guns 'n' Roses 2018\",\n" + 
+		 		"    \"address\" : \"Calle Alcalá 1\",\n" + 
+		 		"    \"city\" : \"MADRID\",\n" + 
+		 		"    \"province\" : \"MADRID\",\n" + 
+		 		"    \"country\" : \"SPAIN\",\n" + 
+		 		"    \"date\" : \"2018-07-05\",\n" + 
+		 		"    \"startTime\" : \"18:00\",\n" + 
+		 		"    \"endTime\" : \"21:00\",\n" + 
+		 		"    \"location\" : \"Plaza de toros de la Ventas\",\n" + 
+		 		"    \"artist\" : \"Guns 'n' Roses\",\n" + 
+		 		"    \"description\" : \"Lorem ipsum...\",\n" + 
+		 		"    \"image\" : \"images/guns-P1080795.png\"\n" + 
+		 		"}";
         given().contentType(ContentType.JSON)
-                .body(Collections.singletonMap("name", "Lemon"))
+                .body(newEvent1)
                 .when()
-                .put(String.valueOf(cherry.getId()))
+                .put(String.valueOf(event1.getId()))
                 .then()
                 .statusCode(200)
-                .body("id", is(cherry.getId()))
-                .body("name", is("Lemon"));
+                .body("id", is(event1.getId()))
+                .body("name", is("Guns 'n' Roses 2018"));
 
     }
 
@@ -157,42 +185,42 @@ public class EventsApplicationTest {
 
     @Test
     public void testPutWithWrongPayload() {
-        Fruit cherry = fruitRepository.save(new Fruit("Cherry"));
+    	Event event1 = eventRepository.save(new Event("Event1", "Address1", "City1", "Province1", "Country1", "2018-07-01", "18:00", "23:00", "Location1", "Artist1", "Desc1", "Image1"));
         given().contentType(ContentType.JSON)
                 .body(Collections.singletonMap("id", 0))
                 .when()
-                .put(String.valueOf(cherry.getId()))
+                .put(String.valueOf(event1.getId()))
                 .then()
                 .statusCode(422);
     }
 
     @Test
     public void testPutWithNonJsonPayload() {
-        Fruit cherry = fruitRepository.save(new Fruit("Cherry"));
+    	Event event1 = eventRepository.save(new Event("Event1", "Address1", "City1", "Province1", "Country1", "2018-07-01", "18:00", "23:00", "Location1", "Artist1", "Desc1", "Image1"));
         given().contentType(ContentType.XML)
                 .when()
-                .put(String.valueOf(cherry.getId()))
+                .put(String.valueOf(event1.getId()))
                 .then()
                 .statusCode(415);
     }
 
     @Test
     public void testPutWithEmptyPayload() {
-        Fruit cherry = fruitRepository.save(new Fruit("Cherry"));
+        Event event1 = eventRepository.save(new Event("Event1", "Address1", "City1", "Province1", "Country1", "2018-07-01", "18:00", "23:00", "Location1", "Artist1", "Desc1", "Image1"));
         given().contentType(ContentType.JSON)
                 .when()
-                .put(String.valueOf(cherry.getId()))
+                .put(String.valueOf(event1.getId()))
                 .then()
                 .statusCode(415);
     }
 
     @Test
     public void testDelete() {
-        Fruit cherry = fruitRepository.save(new Fruit("Cherry"));
-        when().delete(String.valueOf(cherry.getId()))
+        Event event1 = eventRepository.save(new Event("Event1", "Address1", "City1", "Province1", "Country1", "2018-07-01", "18:00", "23:00", "Location1", "Artist1", "Desc1", "Image1"));
+        when().delete(String.valueOf(event1.getId()))
                 .then()
                 .statusCode(204);
-        assertFalse(fruitRepository.exists(cherry.getId()));
+        assertFalse(eventRepository.exists(event1.getId()));
     }
 
     @Test

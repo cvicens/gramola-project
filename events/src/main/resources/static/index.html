@@ -22,13 +22,13 @@
     <!-- Load AngularJS -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script type="text/javascript">
-      var app = angular.module("FruitManagement", []);
+      var app = angular.module("EventManagement", []);
 
       //Controller Part
-      app.controller("FruitManagementController", function ($scope, $http) {
+      app.controller("EventManagementController", function ($scope, $http) {
 
         //Initialize page with default data which is blank in this example
-        $scope.fruits = [];
+        $scope.events = [];
 
         $scope.form = {
           id: -1,
@@ -38,20 +38,20 @@
         //Now load the data from server
         _refreshPageData();
 
-        //HTTP POST/PUT methods for add/edit fruits
+        //HTTP POST/PUT methods for add/edit events
         $scope.update = function () {
           var method = "";
           var url = "";
           var data = {};
           if ($scope.form.id == -1) {
-            //Id is absent so add fruits - POST operation
+            //Id is absent so add events - POST operation
             method = "POST";
-            url = '/api/fruits';
+            url = '/api/events';
             data.name = $scope.form.name;
           } else {
             //If Id is present, it's edit operation - PUT operation
             method = "PUT";
-            url = '/api/fruits/' + $scope.form.id;
+            url = '/api/events/' + $scope.form.id;
             data.name = $scope.form.name;
           }
 
@@ -65,28 +65,28 @@
           }).then(_success, _error);
         };
 
-        //HTTP DELETE- delete fruit by id
-        $scope.remove = function (fruit) {
+        //HTTP DELETE- delete event by id
+        $scope.remove = function (event) {
           $http({
             method: 'DELETE',
-            url: '/api/fruits/' + fruit.id
+            url: '/api/events/' + event.id
           }).then(_success, _error);
         };
 
-        //In case of edit fruits, populate form with fruit data
-        $scope.edit = function (fruit) {
-          $scope.form.name = fruit.name;
-          $scope.form.id = fruit.id;
+        //In case of edit events, populate form with event data
+        $scope.edit = function (event) {
+          $scope.form.name = event.name;
+          $scope.form.id = event.id;
         };
 
           /* Private Methods */
-        //HTTP GET- get all fruits collection
+        //HTTP GET- get all events collection
         function _refreshPageData() {
           $http({
             method: 'GET',
-            url: '/api/fruits'
+            url: '/api/events'
           }).then(function successCallback(response) {
-            $scope.fruits = response.data;
+            $scope.events = response.data;
           }, function errorCallback(response) {
             console.log(response.statusText);
           });
@@ -109,16 +109,16 @@
       });
     </script>
 </head>
-<body ng-app="FruitManagement" ng-controller="FruitManagementController">
+<body ng-app="EventManagement" ng-controller="EventManagementController">
 
 <div class="container">
     <h1>CRUD Mission - Spring Boot</h1>
     <p>
-        This application demonstrates how a Spring Boot application implements a CRUD endpoint to manage <em>fruits</em>.
+        This application demonstrates how a Spring Boot application implements a CRUD endpoint to manage <em>events</em>.
         This management interface invokes the CRUD service endpoint, that interact with a ${db.name} database using JDBC.
     </p>
 
-    <h3>Add/Edit a fruit</h3>
+    <h3>Add/Edit a event</h3>
     <form ng-submit="update()">
         <div class="row">
             <div class="col-6"><input type="text" placeholder="Name" ng-model="form.name" size="60"/></div>
@@ -126,13 +126,13 @@
         <input type="submit" value="Save"/>
     </form>
 
-    <h3>Fruit List</h3>
+    <h3>Event List</h3>
     <div class="row">
         <div class="col-2">Name</div>
     </div>
-    <div class="row" ng-repeat="fruit in fruits">
-        <div class="col-2">{{ fruit.name }}</div>
-        <div class="col-8"><a ng-click="edit( fruit )" class="btn">Edit</a> <a ng-click="remove( fruit )" class="btn">Remove</a>
+    <div class="row" ng-repeat="event in events">
+        <div class="col-2">{{ event.name }}</div>
+        <div class="col-8"><a ng-click="edit( event )" class="btn">Edit</a> <a ng-click="remove( event )" class="btn">Remove</a>
         </div>
     </div>
 </div>

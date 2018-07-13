@@ -24,6 +24,7 @@ import static org.hamcrest.Matchers.isEmptyString;
 
 import java.net.URL;
 import java.util.Collections;
+import java.util.Map;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
@@ -43,20 +44,35 @@ public class EventsApplicationIT {
 
   @Before
   public void setup() {
-    RestAssured.baseURI = url + "api/fruits";
+    RestAssured.baseURI = url + "api/events";
   }
 
   @Test
-  public void testPostGetAndDelete() {
+  public void testPostGetAndDelete() {	 
+	 String object = "{\n" + 
+	 		"    \"name\" : \"Guns 'n' Roses 2018\",\n" + 
+	 		"    \"address\" : \"Calle Alcalá 1\",\n" + 
+	 		"    \"city\" : \"MADRID\",\n" + 
+	 		"    \"province\" : \"MADRID\",\n" + 
+	 		"    \"country\" : \"SPAIN\",\n" + 
+	 		"    \"date\" : \"2018-07-05\",\n" + 
+	 		"    \"startTime\" : \"18:00\",\n" + 
+	 		"    \"endTime\" : \"21:00\",\n" + 
+	 		"    \"location\" : \"Plaza de toros de la Ventas\",\n" + 
+	 		"    \"artist\" : \"Guns 'n' Roses\",\n" + 
+	 		"    \"description\" : \"Lorem ipsum...\",\n" + 
+	 		"    \"image\" : \"images/guns-P1080795.png\"\n" + 
+	 		"}";
+	
     Integer id = given()
       .contentType(ContentType.JSON)
-      .body(Collections.singletonMap("name", "Lemon"))
+      .body(object)
       .when()
       .post()
       .then()
       .statusCode(201)
       .body("id", not(isEmptyString()))
-      .body("name", is("Lemon"))
+      .body("name", is("Guns 'n' Roses 2018"))
       .extract()
       .response()
       .path("id");
@@ -65,7 +81,7 @@ public class EventsApplicationIT {
       .then()
       .statusCode(200)
       .body("id", is(id))
-      .body("name", is("Lemon"));
+      .body("name", is("Guns 'n' Roses 2018"));
 
     when().delete(id.toString())
       .then()
