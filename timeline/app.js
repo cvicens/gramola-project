@@ -35,4 +35,12 @@ app.use('/api/greeting', (request, response) => {
   response.send({content: `Hello, ${name || 'World!'}`});
 });
 
+app.use('/api/health/readiness', (request, response) => {
+  response.send({status: 'success'});
+});
+
+app.use('/api/health/liveness', (request, response) => {
+  response.send({status: 'success'});
+});
+
 module.exports = app;
