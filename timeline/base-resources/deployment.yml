@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: timeline
+spec:
+  template:
+    spec:
+      containers:
+        - env:
+            - name: DB_USERNAME
+              valueFrom:
+                 secretKeyRef:
+                   name: timeline-database-secret
+                   key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                 secretKeyRef:
+                   name: timeline-database-secret
+                   key: password
+            - name: DB_ADMIN_PASSWORD
+              valueFrom:
+                 secretKeyRef:
+                   name: timeline-database-secret
+                   key: password
+        - readinessProbe:
+            httpGet:
+              path: /api/health/readiness
+              port: 8080
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              path: /api/health/liveness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 30

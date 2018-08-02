@@ -1,0 +1,84 @@
+kind: DeploymentConfig
+apiVersion: v1
+metadata:
+  name: timeline-database
+  labels:
+    application: timeline
+    deploymentConfig: timeline
+  annotations:
+    description: Defines how to deploy the database
+spec:
+  replicas: 1
+  selector:
+    name: timeline-database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: timeline-database
+        application: timeline
+      name: timeline-database
+    spec:
+      containers:
+      - env:
+        - name: MONGODB_USER
+          valueFrom:
+            secretKeyRef:
+              name: timeline-database-secret
+              key: user
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: timeline-database-secret
+              key: password
+        - name: MONGODB_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: timeline-database-secret
+              key: admin-password
+        - name: MONGODB_DATABASE
+          valueFrom:
+              configMapKeyRef:
+                name: timeline-configmap
+                key: database_name
+        image: mongodb:3.2
+        livenessProbe:
+          initialDelaySeconds: 30
+          tcpSocket:
+            port: 27017
+          timeoutSeconds: 1
+        name: mongodb
+        ports:
+        - containerPort: 27017
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -i
+            - -c
+            - mongo 127.0.0.1:27017/$MONGODB_DATABASE -u $MONGODB_USER -p $MONGODB_PASSWORD
+              --eval="quit()"
+          initialDelaySeconds: 3
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: 512Mi
+        volumeMounts:
+        - mountPath: /var/lib/mongodb/data
+          name: timeline-database-data
+      volumes:
+      - name: timeline-database-data
+        persistentVolumeClaim:
+          claimName: timeline-database
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - mongodb
+      from:
+        kind: ImageStreamTag
+        name: mongodb:3.2
+        namespace: openshift
+    type: ImageChange
+  - type: ConfigChange
