@@ -16,7 +16,10 @@
 
 package com.redhat.gramola.events.service;
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 
 public interface EventRepository extends CrudRepository<Event, Integer> {
+	 public List<Event> findByCountryAndCityAndDateGreaterThanEqual(String country, String city, String date);	
 }

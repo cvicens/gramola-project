@@ -33,6 +33,7 @@ import com.redhat.gramola.events.exception.UnsupportedMediaTypeException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -45,6 +46,21 @@ public class EventController {
 
     public EventController(EventRepository repository) {
         this.repository = repository;
+    }
+    
+    @GetMapping({"/{country}/{city}", "/{country}/{city}/{date}"})
+    public List<Event> findByCountryAndCityAndDateGreaterThanEqual(
+    		@PathVariable("country") String country,
+    		@PathVariable("city") String city,
+    		@PathVariable("date") Optional<String> date) {
+
+    	if (date.isPresent()) {
+    		return repository.findByCountryAndCityAndDateGreaterThanEqual(country, city, date.get());
+    	} else {
+    		return repository.findByCountryAndCityAndDateGreaterThanEqual(country, city, "");
+    	}
+
+        
     }
 
     @GetMapping("/{id}")
