@@ -45,7 +45,8 @@
     "public",
     "bin",
     "LICENSE",
-    "licenses"
+    "licenses",
+    "lib"
   ],
   "bugs": {
     "url": "https://github.com/bucharest-gold/nodejs-rest-http-redhat/issues"
