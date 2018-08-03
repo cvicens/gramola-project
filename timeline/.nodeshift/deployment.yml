@@ -37,15 +37,19 @@ spec:
                  configMapKeyRef:
                    name: timeline-configmap
                    key: database_name
-          readinessProbe:
-            httpGet:
-              path: /api/health/readiness
-              port: 8080
-              scheme: HTTP
           livenessProbe:
             httpGet:
               path: /api/health/liveness
               port: 8080
               scheme: HTTP
-            initialDelaySeconds: 60
-            periodSeconds: 30
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /api/health/readiness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 1

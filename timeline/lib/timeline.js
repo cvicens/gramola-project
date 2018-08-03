@@ -12,7 +12,7 @@ const DB_SERVICE_PORT = process.env.DB_SERVICE_PORT || "27017";
 const options = {
   //useMongoClient: true,
   //autoIndex: false, // Don't build indexes
-  reconnectTries: 3, // Never stop trying to reconnect
+  reconnectTries: 15, // Never stop trying to reconnect
   reconnectInterval: 500, // Reconnect every 500ms
   //poolSize: 10, // Maintain up to 10 socket connections
   // If not connected, return errors immediately rather than waiting for reconnect
@@ -27,7 +27,7 @@ const options = {
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 mongoose.connect(`mongodb://${DB_SERVICE_NAME}:${DB_SERVICE_PORT}/${DB_NAME}`, options)
-.then((res) => console.log(res))
+.then((res) => console.log('mongoose connected to ', `mongodb://${DB_SERVICE_NAME}:${DB_SERVICE_PORT}/${DB_NAME}`))
 .catch((err) => {
     console.error(err);
     process.exit(1);
@@ -129,4 +129,9 @@ function route() {
   return router;
 }
 
-module.exports = route;
+function readiness() {
+    return mongoose && mongoose.connection && mongoose.connection.readyState != 0;
+}
+
+module.exports.route = route;
+module.exports.readiness = readiness;

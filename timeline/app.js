@@ -34,19 +34,22 @@ app.use('/licenses', express.static(path.join(__dirname, 'licenses')));
 // Hello World endpoint
 app.use('/api/greeting', (request, response) => {
   const name = request.query ? request.query.name : undefined;
-  response.send({content: `Hello, ${name || 'World!'}`});
+  response.send({ content: `Hello, ${name || 'World!'}` });
 });
 
 // TODO: Add timeline API
-app.use('/timeline', require('./lib/timeline.js')());
+const timeline = require('./lib/timeline.js')
+app.use('/timeline', timeline.route());
 
 // TODO: Add liveness and readiness probes
-app.use('/api/health/readiness', (request, response) => {
-  response.send({status: 'success'});
+app.use('/api/health/liveness', (request, response) => {
+  console.log('liveness', true);
+  response.send({ status: 'success' });
 });
 
-app.use('/api/health/liveness', (request, response) => {
-  response.send({status: 'success'});
+app.use('/api/health/readiness', (request, response) => {
+  console.log('readiness', timeline.readiness());
+  response.status(timeline.readiness() ? 200 : 500 ).send({ status: timeline.readiness() ? 'success' : 'failure' });
 });
 
 module.exports = app;
