@@ -27,14 +27,20 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/', express.static(path.join(__dirname, 'public')));
+
 // Expose the license.html at http[s]://[host]:[port]/licences/licenses.html
 app.use('/licenses', express.static(path.join(__dirname, 'licenses')));
 
+// Hello World endpoint
 app.use('/api/greeting', (request, response) => {
   const name = request.query ? request.query.name : undefined;
   response.send({content: `Hello, ${name || 'World!'}`});
 });
 
+// TODO: Add timeline API
+app.use('/timeline', require('./lib/timeline.js')());
+
+// TODO: Add liveness and readiness probes
 app.use('/api/health/readiness', (request, response) => {
   response.send({status: 'success'});
 });

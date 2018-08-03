@@ -22,6 +22,21 @@ spec:
                  secretKeyRef:
                    name: timeline-database-secret
                    key: password
+            - name: DB_SERVICE_NAME
+              valueFrom:
+                 configMapKeyRef:
+                   name: timeline-configmap
+                   key: database_service_name
+            - name: DB_SERVICE_PORT
+              valueFrom:
+                 configMapKeyRef:
+                   name: timeline-configmap
+                   key: database_service_port
+            - name: DB_NAME
+              valueFrom:
+                 configMapKeyRef:
+                   name: timeline-configmap
+                   key: database_name
           readinessProbe:
             httpGet:
               path: /api/health/readiness
