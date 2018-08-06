@@ -1,6 +1,9 @@
+# Configmap
 apiVersion: v1
 kind: ConfigMap
 metadata:
      name: timeline-configmap
 data:
   database_name: "timeline"
+  database_service_name: "timeline-database"
+  database_service_port: "27017"

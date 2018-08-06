@@ -63,7 +63,8 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 256Mi
+            cpu: 200m
         volumeMounts:
         - mountPath: /var/lib/mongodb/data
           name: timeline-database-data
