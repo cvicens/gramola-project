@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    telepresence: 7b0349d5-5b21-4f67-8360-80afc6853ec8
+  name: timeline-tp
+spec:
+  replicas: 1
+  selector:
+    telepresence: 7b0349d5-5b21-4f67-8360-80afc6853ec8
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        telepresence: 7b0349d5-5b21-4f67-8360-80afc6853ec8
+    spec:
+      containers:
+        - env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: user
+                  name: timeline-database-secret
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: timeline-database-secret
+            - name: DB_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: timeline-database-secret
+            - name: DB_SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: database_service_name
+                  name: timeline-configmap
+            - name: DB_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: database_service_port
+                  name: timeline-configmap
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: database_name
+                  name: timeline-configmap
+          image: 'datawire/telepresence-k8s:0.90'
+          imagePullPolicy: IfNotPresent
+          name: timeline-tp
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+    - type: ConfigChange

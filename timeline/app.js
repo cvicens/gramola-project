@@ -22,6 +22,27 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const _mongoose = require('./lib/mongoose-wrapper');
+_mongoose.connect()
+.then((connection) => {
+  process.once('SIGUSR2', function () {
+    console.log('About to close mongodb connection');
+    if (connection) {
+      connection.close(function (err) {
+        if (err) {
+          console.error('Error while closing connection', err);
+        }
+        console.log('About to kill process!');
+        process.kill(process.pid, 'SIGUSR2');
+      });
+    }
+  });
+})
+.catch((err) => {
+  console.error(err);
+  //process.exit(1);
+});
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -34,12 +55,11 @@ app.use('/licenses', express.static(path.join(__dirname, 'licenses')));
 // Hello World endpoint
 app.use('/api/greeting', (request, response) => {
   const name = request.query ? request.query.name : undefined;
-  response.send({ content: `Hello, ${name || 'World!'}` });
+  response.send({ content: `Hi there, ${name || 'World!'}` });
 });
 
 // TODO: Add timeline API
-const timeline = require('./lib/timeline.js')
-app.use('/timeline', timeline.route());
+app.use('/api/timeline', require('./lib/timeline.js')());
 
 // TODO: Add liveness and readiness probes
 app.use('/api/health/liveness', (request, response) => {
@@ -48,8 +68,8 @@ app.use('/api/health/liveness', (request, response) => {
 });
 
 app.use('/api/health/readiness', (request, response) => {
-  console.log('readiness', timeline.readiness());
-  response.status(timeline.readiness() ? 200 : 500 ).send({ status: timeline.readiness() ? 'success' : 'failure' });
+  console.log('readiness', _mongoose.readiness());
+  response.status(_mongoose.readiness() ? 200 : 500 ).send({ status: _mongoose.readiness() ? 'success' : 'failure' });
 });
 
 module.exports = app;

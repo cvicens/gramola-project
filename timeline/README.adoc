@@ -56,6 +56,14 @@ $ oc new-project MY_PROJECT_NAME
 $ npm install && npm run openshift
 ----
 
+== Running the app proxied through telepresence
+[]
+---
+$ telepresence --expose 8080 --deployment timeline-tp --run npm start
+or
+$ telepresence --expose 8080 --deployment timeline-tp --run npm nodemon
+---
+
 == More Information
 You can learn more about this timeline and rest of the Node.js runtime in the link:http://launcher.fabric8.io/docs/nodejs-runtime.html[Node.js Runtime Guide].
 
