@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: files
+spec:
+  template:
+    spec:
+      containers:
+        - env:
+            - name: UPLOAD_DIR
+              valueFrom:
+                configMapKeyRef:
+                  name: files-configmap
+                  key: upload_dir
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          livenessProbe:
+            httpGet:
+              path: /api/health/liveness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /api/health/readiness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 1

@@ -1,0 +1,14 @@
+#### VSCode
+.vscode/
+
+# Temporary
+tmp/
+*.tmp
+*.bak
+local.properties
+
+# Other
+*.log
+*.zip
+.DS_Store
+node_modules/

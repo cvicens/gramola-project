@@ -1,0 +1,7 @@
+# Configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+     name: files-configmap
+data:
+  upload_dir: "/tmp/my-uploads"

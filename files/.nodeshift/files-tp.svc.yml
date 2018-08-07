@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: files-tp
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    telepresence: 7b0349d5-5b21-4f67-8360-80afc6853ec8
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
