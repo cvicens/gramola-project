@@ -1,0 +1,3 @@
+[submodule "gramola-app"]
+	path = gramola-app
+	url = git@github.com:cvicens/gramola-app.git

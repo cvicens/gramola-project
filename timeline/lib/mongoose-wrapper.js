@@ -6,10 +6,9 @@ const DB_SERVICE_NAME = process.env.DB_SERVICE_NAME || "localhost";
 const DB_SERVICE_PORT = process.env.DB_SERVICE_PORT || "27017";
 
 const options = {
-  //useNewUrlParser: true,
-  //useMongoClient: true,
+  useNewUrlParser: true,
   //autoIndex: false, // Don't build indexes
-  //autoReconnect: true,
+  autoReconnect: true,
   reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
   reconnectInterval: 500, // Reconnect every 500ms
   //poolSize: 10, // Maintain up to 10 socket connections
@@ -17,7 +16,7 @@ const options = {
   bufferMaxEntries: 0,
   connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
   socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-  //family: 4 // Use IPv4, skip trying IPv6
+  family: 4, // Use IPv4, skip trying IPv6
   user: DB_USERNAME,
   pass: DB_PASSWORD
 };
