@@ -1,0 +1,9 @@
+# Configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+     name: events-configmap
+data:
+  database_name: "events"
+  database_service_name: "events-database"
+  database_service_port: "5432"

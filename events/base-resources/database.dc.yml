@@ -1,0 +1,68 @@
+kind: DeploymentConfig
+apiVersion: v1
+metadata:
+  name: events-database
+  labels:
+    app: events-database
+    application: events-database
+    deploymentConfig: events-database
+  annotations:
+    description: Defines how to deploy the database
+spec:
+  replicas: 1
+  selector:
+    name: events-database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: events-database
+        application: events-database
+        deploymentConfig: events-database
+      name: events-database
+    spec:
+      containers:
+      - env:
+        - name: POSTGRESQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: events-configmap
+              key: database_name
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: events-database-secret
+              key: password
+        - name: POSTGRESQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: events-database-secret
+              key: user
+        image: postgresql:9.6
+        name: postgresql
+        ports:
+          - containerPort: 5432
+            protocol: TCP
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 200m
+        volumeMounts:
+        - mountPath: /var/lib/pgsql/data
+          name: events-database-data
+      volumes:
+      - name: events-database-data
+        persistentVolumeClaim:
+          claimName: events-database
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - postgresql
+      from:
+        kind: ImageStreamTag
+        name: postgresql:9.6
+        namespace: openshift
+    type: ImageChange
+  - type: ConfigChange
