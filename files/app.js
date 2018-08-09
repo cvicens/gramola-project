@@ -47,7 +47,7 @@ app.use('/api/health/liveness', (request, response) => {
 });
 
 app.use('/api/health/readiness', (request, response) => {
-  console.log('liveness', true);
+  console.log('readiness', true);
   response.send({ status: 'success' });
 });
 

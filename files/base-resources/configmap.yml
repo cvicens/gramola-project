@@ -4,4 +4,4 @@ kind: ConfigMap
 metadata:
      name: files-configmap
 data:
-  upload_dir: "/tmp/my-uploads"
+  upload_dir: "/uploads"

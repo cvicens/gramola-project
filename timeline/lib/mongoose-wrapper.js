@@ -10,7 +10,7 @@ const options = {
   //autoIndex: false, // Don't build indexes
   autoReconnect: true,
   reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
-  reconnectInterval: 500, // Reconnect every 500ms
+  reconnectInterval: 1000, // Reconnect every X ms
   //poolSize: 10, // Maintain up to 10 socket connections
   // If not connected, return errors immediately rather than waiting for reconnect
   bufferMaxEntries: 0,
@@ -48,8 +48,13 @@ function connect() {
     return new Promise((resolve, reject) => {
         mongoose.connect(`mongodb://${DB_SERVICE_NAME}:${DB_SERVICE_PORT}/${DB_NAME}`, options)
         .then((res) => {
-            console.log('mongoose connected to ', `mongodb://${DB_SERVICE_NAME}:${DB_SERVICE_PORT}/${DB_NAME}`);
-            resolve(mongoose.connection)
+            if (mongoose.connection && mongoose.connection.readyState == 1) {
+                console.log('mongoose connected to ', `mongodb://${DB_SERVICE_NAME}:${DB_SERVICE_PORT}/${DB_NAME}`);
+                resolve(mongoose.connection);
+            } else {
+                console.log('mongoose NOT connected to ', `mongodb://${DB_SERVICE_NAME}:${DB_SERVICE_PORT}/${DB_NAME}`);
+                reject('mongoose NOT connected status:', mongoose.connection.readyState);
+            }
         })
         .catch((err) => {
             reject(err);
@@ -59,7 +64,7 @@ function connect() {
 }
 
 function readiness() {
-    return mongoose && mongoose.connection && mongoose.connection.readyState != 0;
+    return mongoose && mongoose.connection && mongoose.connection.readyState == 1;
 }
 
 module.exports.connect = connect;

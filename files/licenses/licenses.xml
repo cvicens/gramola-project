@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <licenseSummary>
-    <project>timeline</project>
+    <project>files</project>
     <version>1.0.0-SNAPSHOT</version>
     <license>Apache-2.0</license>
     <dependencies>

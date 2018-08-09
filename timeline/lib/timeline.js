@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const SUCCESS = 'success';
+const ERROR = 'error';
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -69,7 +72,7 @@ function route() {
   // Miiddle ware to check db connection
   router.use(function (req, res, next) {
     if (!readiness()) {
-      res.status(500).json({status: 'failure', desc: 'Connection not ready'});
+      res.status(500).json({status: ERROR, desc: 'Connection not ready'});
       return;
     }
     next();
@@ -90,7 +93,7 @@ function route() {
       res.status(200).json(data);
     })
     .catch(function (err) {
-      res.status(500).json({result:'ERROR', msg: err})
+      res.status(500).json({status: ERROR, msg: err})
     });
   });
 
@@ -107,7 +110,7 @@ function route() {
       res.status(200).json(data);
     })
     .catch(function (err) {
-      res.status(500).json({result:'ERROR', msg: err})
+      res.status(500).json({status: ERROR, msg: err})
     });
   });
 

@@ -23,25 +23,39 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const _mongoose = require('./lib/mongoose-wrapper');
-_mongoose.connect()
-.then((connection) => {
-  process.once('SIGUSR2', function () {
-    console.log('About to close mongodb connection');
-    if (connection) {
-      connection.close(function (err) {
-        if (err) {
-          console.error('Error while closing connection', err);
-        }
-        console.log('About to kill process!');
-        process.kill(process.pid, 'SIGUSR2');
-      });
+
+let databaseInitTries = 3;
+let databaseInitInterval = 1000;
+let databaseInitialized = false;
+
+function initDatabase () {
+  _mongoose.connect()
+  .then((connection) => {
+    databaseInitialized = true;
+    process.once('SIGUSR2', function () {
+      console.log('About to close mongodb connection');
+      if (connection) {
+        connection.close(function (err) {
+          if (err) {
+            console.error('Error while closing connection', err);
+          }
+          console.log('About to kill process!');
+          process.kill(process.pid, 'SIGUSR2');
+        });
+      }
+    });
+  })
+  .catch((err) => {
+    console.error('initDatabase err:', err);
+    if (databaseInitTries > 0) {
+      databaseInitTries--;
+      setTimeout(initDatabase, databaseInitInterval);
+    } else {
+      //process.exit(1);
     }
   });
-})
-.catch((err) => {
-  console.error(err);
-  //process.exit(1);
-});
+}
+initDatabase();
 
 const app = express();
 
@@ -63,6 +77,11 @@ app.use('/api/timeline', require('./lib/timeline.js')());
 
 // TODO: Add liveness and readiness probes
 app.use('/api/health/liveness', (request, response) => {
+  if (databaseInitTries <= 0) {
+    console.log('liveness', false);
+    response.status(500).send({ status: 'failure', message: 'databaseInitTries reached zero' });
+    return;  
+  }
   console.log('liveness', true);
   response.send({ status: 'success' });
 });

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Deployment
 metadata:
   name: files
+  application: files
 spec:
   template:
     spec:
@@ -35,3 +36,10 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
             timeoutSeconds: 1
+          volumeMounts:
+            - mountPath: /uploads
+              name: files-uploads-data
+      volumes:
+      - name: files-uploads-data
+        persistentVolumeClaim:
+          claimName: files-uploads

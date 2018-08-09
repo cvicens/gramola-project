@@ -59,8 +59,6 @@ public class EventController {
     	} else {
     		return repository.findByCountryAndCityAndDateGreaterThanEqual(country, city, "");
     	}
-
-        
     }
 
     @GetMapping("/{id}")

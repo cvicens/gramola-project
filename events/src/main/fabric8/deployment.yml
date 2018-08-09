@@ -10,12 +10,27 @@ spec:
             - name: DB_USERNAME
               valueFrom:
                  secretKeyRef:
-                   name: my-database-secret
+                   name: events-database-secret
                    key: user
             - name: DB_PASSWORD
               valueFrom:
                  secretKeyRef:
-                   name: my-database-secret
+                   name: events-database-secret
                    key: password
+            - name: DB_SERVICE_NAME
+              valueFrom:
+                 configMapKeyRef:
+                   name: events-configmap
+                   key: database_service_name
+            - name: DB_SERVICE_PORT
+              valueFrom:
+                 configMapKeyRef:
+                   name: events-configmap
+                   key: database_service_port
+            - name: DB_NAME
+              valueFrom:
+                 configMapKeyRef:
+                   name: events-configmap
+                   key: database_name
             - name: JAVA_OPTIONS
               value: "-Dspring.profiles.active=openshift"
